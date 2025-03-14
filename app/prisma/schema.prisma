@@ -1,0 +1,30 @@
+// Configuração do banco de dados (datasource)
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Definição dos modelos
+model Aluno {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  idade       Int
+  boletins    Boletim[]
+  professor   Professor? @relation("ProfessorAlunos", fields: [professorId], references: [id])
+  professorId Int?
+}
+
+model Professor {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  materia  String
+  alunos   Aluno[]  @relation("ProfessorAlunos")
+}
+
+model Boletim {
+  id         Int    @id @default(autoincrement())
+  alunoId    Int
+  disciplina String
+  nota       Float
+  aluno      Aluno  @relation(fields: [alunoId], references: [id])
+}

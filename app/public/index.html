@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escola</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Gestão Escolar</h1>
+
+  <div id="alunos-list">
+    <h2>Alunos</h2>
+    <ul id="alunos"></ul>
+    <button onclick="adicionarAluno()">Adicionar Aluno</button>
+  </div>
+
+  <script>
+    async function getAlunos() {
+      const res = await fetch('http://localhost:3000/alunos');
+      const alunos = await res.json();
+      const alunosList = document.getElementById('alunos');
+      alunosList.innerHTML = '';
+      alunos.forEach(aluno => {
+        const alunoItem = document.createElement('li');
+        alunoItem.textContent = `${aluno.nome} - ${aluno.idade} anos - ${aluno.endereco}`;
+        alunosList.appendChild(alunoItem);
+      });
+    }
+
+    function adicionarAluno() {
+      const nome = prompt('Nome do aluno');
+      const idade = prompt('Idade');
+      const endereco = prompt('Endereço');
+      
+      fetch('http://localhost:3000/alunos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, idade, endereco })
+      })
+      .then(() => getAlunos());
+    }
+
+    // Inicializar
+    getAlunos();
+  </script>
+</body>
+</html>
